@@ -2,6 +2,9 @@ import React from 'react';
 import ButtonStyle from "../../UI/Button/ButtonStyle";
 
 function Tbody({user,removeUser}) {
+    if(!user.length){
+        <h6 className="text-center">Not Found</h6>
+    }
     return (
         <tbody>
         {user.map((val,index)=>(
