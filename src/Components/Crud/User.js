@@ -1,36 +1,32 @@
 import React, {useMemo, useState} from 'react';
-import Thead from "./Thead";
 import Tbody from "./Tbody";
 import FilterAndSearch from "../FilterAndSearch/FilterAndSearch";
 import Modal from "../Modal/Modal";
 import AddUser from "../AddUser/AddUser";
 import ButtonStyle from "../../UI/Button/ButtonStyle";
+import {usePosts} from "../../hooks/useCreatePost";
 
 function User(props) {
     const [user,setUser]=useState([
         {
             id:3,
             firstName:"Umid",
-            age:20,
             job:"Sotuvchi"
         },
         {
             id:2,
             firstName:"Kamoliddin",
-            age:19,
             job:"Doctor"
         },
         {
             id:1,
             firstName:"Jaloliddin",
-            age:21,
             job:"Student"
         },
     ])
 
     const [post,setPost]=useState({
        firstName:"",
-       age:"",
        job:"",
    })
 
@@ -38,22 +34,13 @@ function User(props) {
 
     const [modal,setModal]=useState(false)
 
-    const sortedUsers=useMemo(()=>{
-        if(filter.sort){
-            return [...user].sort((a,b)=>a[filter.sort].localeCompare(b[filter.sort]))
-
-        }
-        return user
-    },[filter.sort,user])
-
-    const sortAndSearchUsers=useMemo(()=>{
-        return sortedUsers.filter(post=>post.firstName.toLowerCase().includes(filter.query.toLowerCase()))
-    },[sortedUsers,filter.query])
+    const sortAndSearchUsers=usePosts(user,filter.sort,filter.query)
 
     const addUser=(e)=>{
         e.preventDefault();
         setUser([...user,{...post,id:Date.now()}])
         setModal(false)
+        setPost({firstName: "",job:""})
     }
 
     const removeUser=(post)=>{
@@ -81,11 +68,7 @@ function User(props) {
                         <div className="card-footer">
                             {
                                 sortAndSearchUsers.length ?
-                                    <table className="table table-striped table-bordered text-center">
-                                        <Thead/>
                                         <Tbody removeUser={removeUser} user={sortAndSearchUsers}/>
-                                    </table>
-
                                     : <h6 className="text-center">Not Found</h6>
                             }
 
